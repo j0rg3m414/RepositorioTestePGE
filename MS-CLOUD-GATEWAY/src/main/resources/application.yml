@@ -1,0 +1,19 @@
+spring:
+  aplication:
+    name: ms-spring-cloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    fetch-registry: true
+    registrer-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka

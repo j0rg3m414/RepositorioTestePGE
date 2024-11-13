@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: ms-restaurante-eureka-client
+  datasource:
+    url: jdbc:postgresql://postgres/restaurantedb
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update # Pode ser 'create', 'update', 'validate' ou 'none'
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    schemas: public
+    default-schema: public
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+    ssl:
+      enabled: false
+
+#ira subir numa porta randomica na hora de gerar as instancias no eureka server
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+mq:
+  queues:
+    emissao-pedido: emissao-pedido
+    emissao-status-pedido: emissao-status-pedido
+    retirada-pedido-entregue-fila: retirada-pedido-entregue-fila

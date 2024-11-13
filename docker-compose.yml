@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.8-alpine3.20
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: restaurantedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - restaurante-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # Porta padrão do RabbitMQ
+      - "15672:15672"  # Porta do painel de gerenciamento
+    expose:
+      - 5672
+      - 15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - restaurante-network
+
+  eureka-server:
+    container_name: eureka-server
+    build:
+      context: ./-RestaurantSystem
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    expose:
+      - 8761
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - restaurante-network
+
+  ms-cloud-gateway:
+    container_name: ms-cloud-gateway
+    build:
+      context: ./MS-CLOUD-GATEWAY
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    depends_on:
+      - eureka-server
+    networks:
+      - restaurante-network
+
+  ms-client-restaurante:
+    container_name: ms-client-restaurante
+    build:
+      context: ./restaurante-system-client
+      dockerfile: Dockerfile
+    depends_on:
+      - eureka-server
+      - ms-cloud-gateway
+      - postgres
+      - rabbitmq
+    networks:
+      - restaurante-network
+
+  ms-client-cozinha:
+    container_name: ms-client-cozinha
+    build:
+      context: ./msconzinha
+      dockerfile: Dockerfile
+    depends_on:
+      - eureka-server
+      - ms-cloud-gateway
+      - postgres
+      - rabbitmq
+    networks:
+      - restaurante-network
+
+networks:
+  restaurante-network:
+    driver: bridge

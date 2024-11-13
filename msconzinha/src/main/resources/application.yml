@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ms-cozinha
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+logging:
+  level:
+    feign: DEBUG
+    com.restaurante.mscozinha: DEBUG
+
+mq:
+  queues:
+    emissao-pedido: emissao-pedido
+    emissao-status-pedido: emissao-status-pedido
+    retirada-pedido-entregue-fila: retirada-pedido-entregue-fila

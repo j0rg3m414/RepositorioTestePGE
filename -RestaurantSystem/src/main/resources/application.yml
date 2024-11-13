@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ms-restaurante-eureka-server
+
+server:
+  port: 8761
+
+# para dicionar a configuração do client, para que
+# ele não seja registrado nele mesmo como um serviço e evitar o auto-registro
+# como ms nele mesmo, como é um server.
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
