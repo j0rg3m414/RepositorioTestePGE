@@ -128,13 +128,6 @@ Param: numPedido
 Valor: [Inteiro]
 ```
 
-Testes
-Para executar os testes, utilize o seguinte comando:
-
-   ```bash
-./mvnw test
-```
-
 ## Contato
 
 Para dúvidas ou sugestões, entre em contato:
