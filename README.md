@@ -5,7 +5,7 @@
 - [Visão Geral](#visão-geral)
 - [Arquitetura](#Arquitetura)
 - [Tecnologias Utilizadas](#Tecnologias Utilizadas)
-- [Como Usar](#Como Usar)
+- [Como Rodar](#Como Rodar)
 - [Contato](#Contato)
 
 ## Visão Geral
@@ -21,13 +21,6 @@ O microserviço de gateway se posiciona entre os clientes e os microserviços da
                             \__> [Server (Eureka Server)] -->
                                            \__> [Client (Eureka Client)]--> [Banco (PostGres)]        [Cozinha (Eureka Client)] 
                                                                  \__JSON<--> [Mensageria (RabbitMQ)] <-->JSON__/
-## Benefícios
-
-- **Simplicidade**: Centraliza o gerenciamento de requisições em um único ponto, simplificando a comunicação entre os serviços.
-- **Escalabilidade**: Facilita a adição de novos serviços e a modificação de rotas sem impactar os clientes.
-- **Segurança**: Permite a implementação de autenticação e autorização em um único lugar, protegendo todos os microserviços.
-- **Monitoramento**: Integra-se com ferramentas de monitoramento e observabilidade para rastrear o desempenho e a saúde dos serviços.
-
 ## Tecnologias Utilizadas
 
 - **Java**: 11 (2021.0.1)
@@ -39,7 +32,6 @@ O microserviço de gateway se posiciona entre os clientes e os microserviços da
 - **Flyway**: ferramenta que ajuda desenvolvedores a gerenciar mudanças no banco de dados de uma aplicação.
 - **RabbitMQ**: ferramenta que ajuda diferentes partes de um sistema a se comunicarem entre si.
 - **Spring Data JPA**: gerencia toda parte transacional com o banco com JPA e Hibernate como ORM.
-- 
 
 ## Como Rodar
 
