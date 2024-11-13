@@ -2,19 +2,19 @@
 
 ## Índice
 
-- [Visão Geral](#visão-geral)
-- [Arquitetura](#Arquitetura)
-- [Tecnologias Utilizadas](#Tecnologias Utilizadas)
-- [Como Rodar](#Como Rodar)
-- [Contato](#Contato)
+- Visão Geral
+- Arquitetura
+- Tecnologias Utilizadas
+- Como Rodar
+- Contato
 
 ## Visão Geral
 
-A implementação dos microserviços foi pensado da seguinte forma, tenho uma ou mais instâncias de um MS Eureka client (restaurante-system-client) que está rodando em um MS Eureka Server (-RestaurantSystem) que tem uma porta fixa e o mesmo passa por um gateway (MS-CLOUD-GATEWAY) que também tem uma porta fixa que faz o balanceamento de carga das requisições. A comunicação entre os MS é feita por mensageria usando RabbitMQ (em Docker), por onde são enviados os pedidos entre o MS Client (restaurante-system-client) com portas geradas automaticamente pois quem vai gerenciar isso é o Gateway e o MS Cozinha (msconzinha) com a porta configurada da mesma forma que o outro Client. As filas são geradas programaticamente por meio de arquivo de configuração com os seus respectivos Publishers e Subscribers, tando do lado do MS Client (restaurante-system-client) quanto do MS Cozinha (msconzinha). Os dados são gravados (no caso o MS Client que tem a conexão com o banco) em um banco relacional, no caso o Posgres (imagem Docker) foi usado, as tabelas e cargas iniciais são realizados por meio do Flyway e migrations localizados dentro do MS Client (restaurante-system-client) que são disparadas ao subir o mesmo. Cada MS tem seu Dockerfile que baixa da imagem maven tagueada com a versão do java usada (java 11) e é executado o comando para o mavem gerar o package (.jar), tem um outro build no mesmo arquivo que copia o .jar para o diretório raiz e é executado com o java para subir a aplicação. O Docker compose está configurado com a ordem correta de subida dos microserviços, RabbitMQ, postgres, criado uma network para comunicação entre os containers. Infelizmente não consegui implementar a parte do front como cliente, mas pode ser usado o Insomnia ou Postman para realizar os testes dos endpoints. Caso queiram, pode usar um PGAdmin para se conectar com o banco e ter acesso aos registros gerados. Ao longo deste documento haverá instruções. Cada microserviço tem um README.
+A implementação dos microserviços foi pensado da seguinte forma, tenho uma ou mais instâncias de um MS Eureka client (restaurante-system-client) que está rodando em um MS Eureka Server (-RestaurantSystem) que tem uma porta fixa e o mesmo passa por um gateway (MS-CLOUD-GATEWAY) que também tem uma porta fixa que faz o balanceamento de carga das requisições. A comunicação entre os MS é feita por mensageria usando RabbitMQ (em Docker), por onde são enviados os pedidos entre o MS Client (restaurante-system-client) com portas geradas automaticamente pois quem vai gerenciar isso é o Gateway e o MS Cozinha (msconzinha) com a porta configurada da mesma forma que o outro Client. As filas são geradas programaticamente por meio de arquivo de configuração com os seus respectivos Publishers e Subscribers, tando do lado do MS Client (restaurante-system-client) quanto do MS Cozinha (msconzinha). Os dados são gravados (no caso o MS Client que tem a conexão com o banco) em um banco relacional, no caso o Posgres (imagem Docker) foi usado, as tabelas e cargas iniciais são realizados por meio do Flyway e migrations localizados dentro do MS Client (restaurante-system-client) que são disparadas ao subir o mesmo. Cada MS tem seu Dockerfile que baixa da imagem maven tagueada com a versão do java usada (java 11) e é executado o comando para o mavem gerar o package (.jar), tem um outro build no mesmo arquivo que copia o .jar para o diretório raiz e é executado com o java para subir a aplicação. O Docker compose está configurado com a ordem correta de subida dos microserviços, RabbitMQ, postgres, criado uma network para comunicação entre os containers. Infelizmente não consegui implementar a parte do front como cliente para interações sugeridas no documento, mas pode ser usado o Insomnia ou Postman para realizar os testes dos endpoints. Caso queiram, pode usar um PGAdmin para se conectar com o banco e ter acesso aos registros gerados. Ao longo deste documento haverá instruções. Dos testes unitários foram escolhidos dois cenários, estão implementados no MS Client (restaurante-system-client). Cada microserviço tem um README.
 
 ## Arquitetura
 
-O microserviço de gateway se posiciona entre os clientes e os microserviços da aplicação. Ele intercepta todas as requisições, aplica a lógica de roteamento e, se necessário, comos segue:
+Temos um microserviço rodando como server (Eureka Server) que recebe os microserviços clients (Eureka Client) e o Gateway (Spring-Cloud-Gateway) e que faz o roteamento co os clients para o balançeamento de carga. O Client grava as informações no banco e a Cozinha manda informações de mudança de status para o Client gravar no banco via mensageria (RabbitMQ), comos segue:
 [Usuário] 
   \__requisições--> 
           [Gateway (Spring Cloud Gateway)] -->
